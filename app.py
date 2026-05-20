@@ -157,4 +157,4 @@ def login():
 
 if __name__ == '__main__':
     app.run(debug=True)
->>>>>>> 186c47f (Add Flask backend and MySQL database)
+
