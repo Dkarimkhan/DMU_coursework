@@ -148,9 +148,84 @@
 
 <div id="loginPage" style="display:none">
   <h2>Log In</h2>
-  Email: <input type="email" id="loginEmail" placeholder="your@email.com /><br><br>
+  Email: <input type="email" id="loginEmail" placeholder="your@email.com" /><br><br>
   Password: <input type="password" id="loginPassword" placeholder="Password" /><br><br>
   <button onclick="login()">Log In</button>
-  <p 
+  <p id="loginError" style="color:red"></p>
+  <p>No account? <a href="#" onclick="showPage('signupPage')">Sign Up here</a></p>
+</div>
+ 
+<div id="signupPage" style="display:none">
+  <h2>Sign Up</h2>
+  Full Name: <input type="text" id="signupName" placeholder="Your full name" /><br><br>
+  Email: <input type="email" id="signupEmail" placeholder="your@email.com" /><br><br>
+  Password: <input type="password" id="signupPassword" placeholder="Create a password" /><br><br>
+  <button onclick="signup()">Create Account</button>
+  <p id="signupError" style="color:red"></p>
+  <p>Already have an account? <a href="#" onclick="showPage('loginPage')">Log In here</a></p>
+</div>
+ 
+<div id="profilePage" style="display:none">
+  <h2>My Profile</h2>
+  <p>Name: <b id="profileName"></b></p>
+  <p>Email: <b id="profileEmail"></b></p>
+  <h3>My Enrolled Courses:</h3>
+  <p id="noCoursesMsg">You have not registered for any courses yet.</p>
+  <ul id="profileCourseList"></ul>
+</div>
 
+<script>
+const BASE_URL = "http://127.0.0.1:5000";
+
+// LOGIN
+function login() {
+  fetch(BASE_URL + "/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: document.getElementById("loginEmail").value,
+      password: document.getElementById("loginPassword").value
+    })
+  })
+  .then(res => res.json())
+  .then(data => alert(data.message));
+}
+
+// REGISTER
+function register() {
+  fetch(BASE_URL + "/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: document.getElementById("regName").value,
+      email: document.getElementById("regEmail").value,
+      password: document.getElementById("regPassword").value
+    })
+  })
+  .then(res => res.json())
+  .then(data => alert(data.message));
+}
+
+// ENROLL COURSE
+function registerCourse(courseId) {
+  fetch(BASE_URL + "/enroll", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      user_id: 1,
+      course_id: courseId
+    })
+  })
+  .then(res => res.json())
+  .then(data => alert(data.message));
+}
+</script>
+</body>
+</html>
 
