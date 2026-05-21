@@ -4,9 +4,6 @@
   <meta charset="UTF-8">
   <title>IT Academy</title>
   <style>
-    /* ══════════════════════════════
-       GLOBAL STYLES
-    ══════════════════════════════ */
     body {
       font-family: Arial, sans-serif;
       background-color: #ffffff;
@@ -14,12 +11,10 @@
       margin: 0;
       padding: 0;
     }
-
-    /* All "pages" are hidden by default; only one shows at a time */
+    
     .page { display: none; }
     .page.active { display: block; }
 
-    /* ── NAVBAR ── */
     .navbar {
       background-color: #8B0000;
       padding: 12px 30px;
@@ -43,7 +38,6 @@
     }
     .navbar-links span:hover { text-decoration: underline; }
 
-    /* ── BUTTONS ── */
     .btn-white {
       background-color: #ffffff;
       color: #8B0000;
@@ -90,7 +84,6 @@
     }
     .btn-grey:hover { background-color: #777777; }
 
-    /* ── MODAL ── */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -128,7 +121,6 @@
     }
     .error-msg { color: #8B0000; font-size: 13px; margin-top: 8px; }
 
-    /* ── FOOTER ── */
     footer {
       text-align: center;
       padding: 20px;
@@ -138,7 +130,6 @@
       margin-top: 60px;
     }
 
-    /* ── CONTENT WRAPPER ── */
     .content {
       max-width: 900px;
       margin: 40px auto;
@@ -150,9 +141,6 @@
       padding-bottom: 8px;
     }
 
-    /* ══════════════════════════════
-       HOME PAGE
-    ══════════════════════════════ */
     .hero {
       background-color: #f9f0f0;
       text-align: center;
@@ -177,9 +165,6 @@
     .course-item h3 { margin: 0 0 5px 0; font-size: 17px; }
     .course-item p  { margin: 0; font-size: 14px; color: #555555; }
 
-    /* ══════════════════════════════
-       COURSE PAGE
-    ══════════════════════════════ */
     .course-header {
       background-color: #8B0000;
       color: #ffffff;
@@ -250,9 +235,6 @@
     .course-nav span { color: #8B0000; cursor: pointer; font-size: 14px; }
     .course-nav span:hover { text-decoration: underline; }
 
-    /* ══════════════════════════════
-       PROFILE PAGE
-    ══════════════════════════════ */
     .profile-card {
       border: 1px solid #cccccc;
       padding: 25px 30px;
@@ -281,9 +263,6 @@
       font-size: 12px;
     }
 
-    /* ══════════════════════════════
-       ADMIN PAGE
-    ══════════════════════════════ */
     #admin-login-box {
       max-width: 380px;
       margin: 80px auto;
@@ -377,9 +356,6 @@
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════
-     NAVBAR  (same on every page)
-════════════════════════════════════════════ -->
 <div class="navbar">
   <span class="logo" onclick="goTo('home')">IT Academy</span>
   <div class="navbar-links" id="navbar-links">
@@ -391,10 +367,6 @@
   </div>
 </div>
 
-
-<!-- ════════════════════════════════════════════
-     PAGE: HOME
-════════════════════════════════════════════ -->
 <div class="page active" id="page-home">
 
   <div class="hero">
@@ -454,14 +426,8 @@
       <button class="btn-red" onclick="openCourse(6)">More Info</button>
     </div>
   </div>
-
-  <footer>IT Academy &copy; 2025. All rights reserved.</footer>
 </div>
 
-
-<!-- ════════════════════════════════════════════
-     PAGE: COURSE DETAIL  (one page, filled by JS)
-════════════════════════════════════════════ -->
 <div class="page" id="page-course">
 
   <div class="course-header">
@@ -494,14 +460,8 @@
       <span id="c-next" onclick="navCourse(1)">Next Course</span>
     </div>
   </div>
-
-  <footer>IT Academy &copy; 2025. All rights reserved.</footer>
 </div>
 
-
-<!-- ════════════════════════════════════════════
-     PAGE: PROFILE
-════════════════════════════════════════════ -->
 <div class="page" id="page-profile">
 
   <div class="content">
@@ -518,17 +478,10 @@
     <br>
     <button class="btn-red" onclick="goTo('home')">Browse More Courses</button>
   </div>
-
-  <footer>IT Academy &copy; 2025. All rights reserved.</footer>
 </div>
 
-
-<!-- ════════════════════════════════════════════
-     PAGE: ADMIN
-════════════════════════════════════════════ -->
 <div class="page" id="page-admin">
 
-  <!-- Admin login form -->
   <div id="admin-login-box">
     <h2>Admin Login</h2>
     <p style="font-size:14px; color:#555555;">This area is for administrators only.</p>
@@ -542,7 +495,6 @@
     <button class="btn-red" style="margin-top:18px; width:100%; padding:10px;" onclick="adminLogin()">Log In as Admin</button>
   </div>
 
-  <!-- Admin panel (hidden until logged in) -->
   <div id="admin-panel" style="display:none;">
     <div class="content">
 
@@ -556,7 +508,6 @@
         <button class="tab-btn"        onclick="showAdminTab('tab-courses',  this)">Manage Courses</button>
       </div>
 
-      <!-- TAB: Students -->
       <div class="tab-pane active" id="tab-students">
         <h2 class="section-title">Students Enrolled in Courses</h2>
         <table>
@@ -571,11 +522,9 @@
         </p>
       </div>
 
-      <!-- TAB: Courses -->
       <div class="tab-pane" id="tab-courses">
         <h2 class="section-title">Manage Courses</h2>
 
-        <!-- Add / Edit form -->
         <div id="course-form-box">
           <h3 id="form-heading">Add New Course</h3>
           <input type="hidden" id="edit-id">
@@ -606,16 +555,11 @@
         <div id="admin-courses-list"></div>
       </div>
 
-    </div><!-- /content -->
-  </div><!-- /admin-panel -->
-
-  <footer>IT Academy &copy; 2025. All rights reserved.</footer>
+    </div>
+  </div>
+  
 </div>
 
-
-<!-- ════════════════════════════════════════════
-     MODAL: LOG IN
-════════════════════════════════════════════ -->
 <div class="modal-overlay" id="loginModal">
   <div class="modal-box">
     <button class="close-btn" onclick="closeModal('loginModal')">x</button>
@@ -634,10 +578,6 @@
   </div>
 </div>
 
-
-<!-- ════════════════════════════════════════════
-     MODAL: SIGN UP
-════════════════════════════════════════════ -->
 <div class="modal-overlay" id="signupModal">
   <div class="modal-box">
     <button class="close-btn" onclick="closeModal('signupModal')">x</button>
@@ -659,16 +599,8 @@
   </div>
 </div>
 
-
-<!-- ════════════════════════════════════════════
-     JAVASCRIPT — ALL LOGIC IN ONE PLACE
-════════════════════════════════════════════ -->
 <script>
 
-/* ══════════════════════════════════════════
-   COURSE DATA
-   To add/edit courses, change this array.
-══════════════════════════════════════════ */
 var COURSES = [
   {
     id: 1,
@@ -744,42 +676,31 @@ var COURSES = [
   }
 ];
 
-/* Course currently being viewed (used for Prev/Next navigation) */
 var currentCourseId = 1;
 
-/* ══════════════════════════════════════════
-   PAGE NAVIGATION
-   goTo(pageName) switches which page is visible.
-══════════════════════════════════════════ */
 function goTo(pageName) {
-  /* Hide all pages */
+
   document.querySelectorAll(".page").forEach(function(p) {
     p.classList.remove("active");
   });
-  /* Show requested page */
+
   document.getElementById("page-" + pageName).classList.add("active");
-  /* Scroll back to top */
+
   window.scrollTo(0, 0);
 
-  /* Fill page with data if needed */
   if (pageName === "profile") fillProfilePage();
 }
 
-/* ══════════════════════════════════════════
-   COURSE PAGE
-══════════════════════════════════════════ */
 function openCourse(id) {
   var course = COURSES.find(function(c) { return c.id === id; });
   if (!course) return;
 
   currentCourseId = id;
 
-  /* Fill in title, description, lecturer */
   document.getElementById("c-title").textContent    = course.title;
   document.getElementById("c-desc").textContent     = course.desc;
   document.getElementById("c-lecturer").textContent = course.lecturer;
 
-  /* Build modules list */
   var html = "";
   course.mods.forEach(function(mod, i) {
     html += '<div class="module-item">';
@@ -789,7 +710,6 @@ function openCourse(id) {
   });
   document.getElementById("c-modules").innerHTML = html;
 
-  /* Check if already registered */
   var enrolled = getEnrolledIds();
   var btn = document.getElementById("registerBtn");
   if (enrolled.indexOf(id) !== -1) {
@@ -800,7 +720,6 @@ function openCourse(id) {
     btn.classList.remove("registered");
   }
 
-  /* Prev / Next labels */
   var prevIdx = id - 2; /* 0-based index of previous */
   var nextIdx = id;     /* 0-based index of next */
   document.getElementById("c-prev").textContent = (prevIdx >= 0)               ? "Previous: " + COURSES[prevIdx].title : "All Courses";
@@ -818,9 +737,6 @@ function navCourse(direction) {
   }
 }
 
-/* ══════════════════════════════════════════
-   REGISTER FOR COURSE
-══════════════════════════════════════════ */
 async function registerCourse() {
   var btn = document.getElementById("registerBtn");
   if (btn.classList.contains("registered")) return;
@@ -874,9 +790,6 @@ function saveEnrollment(id, title) {
 function getEnrolledIds()    { return JSON.parse(localStorage.getItem("enrolledIds")    || "[]"); }
 function getEnrolledTitles() { return JSON.parse(localStorage.getItem("enrolledTitles") || "{}"); }
 
-/* ══════════════════════════════════════════
-   PROFILE PAGE
-══════════════════════════════════════════ */
 function fillProfilePage() {
   document.getElementById("profile-name").textContent  = localStorage.getItem("userName")  || "Not logged in";
   document.getElementById("profile-email").textContent = localStorage.getItem("userEmail") || "";
@@ -903,14 +816,10 @@ function fillProfilePage() {
   container.innerHTML = html;
 }
 
-/* ══════════════════════════════════════════
-   MODALS (Login / Sign Up)
-══════════════════════════════════════════ */
 function openModal(id)  { document.getElementById(id).style.display = "block"; }
 function closeModal(id) { document.getElementById(id).style.display = "none";  }
 function switchModal(closeId, openId) { closeModal(closeId); openModal(openId); }
 
-/* Update navbar buttons based on login state */
 function updateNavbar() {
   var loggedIn = localStorage.getItem("loggedIn") === "true";
   document.getElementById("nav-login-btn").style.display  = loggedIn ? "none"         : "inline-block";
@@ -919,7 +828,6 @@ function updateNavbar() {
   document.getElementById("nav-profile").style.display    = loggedIn ? "inline"       : "none";
 }
 
-/* ── LOG IN ── */
 async function doLogin() {
   var email    = document.getElementById("login-email").value.trim();
   var password = document.getElementById("login-password").value;
@@ -950,7 +858,6 @@ async function doLogin() {
   }
 }
 
-/* ── SIGN UP ── */
 async function doSignup() {
   var name     = document.getElementById("signup-name").value.trim();
   var email    = document.getElementById("signup-email").value.trim();
@@ -998,13 +905,8 @@ function logout() {
   goTo("home");
 }
 
-/* ══════════════════════════════════════════
-   ADMIN PAGE
-   Default credentials: admin / admin123
-   Change ADMIN_USERNAME and ADMIN_PASSWORD below.
-══════════════════════════════════════════ */
 var ADMIN_USERNAME = "admin";
-var ADMIN_PASSWORD = "admin123";
+var ADMIN_PASSWORD = "12345";
 
 function adminLogin() {
   var user  = document.getElementById("admin-user").value.trim();
@@ -1032,7 +934,6 @@ function adminLogout() {
   document.getElementById("admin-login-error").textContent = "";
 }
 
-/* Admin tabs */
 function showAdminTab(tabId, btnEl) {
   document.querySelectorAll(".tab-pane").forEach(function(p) { p.classList.remove("active"); });
   document.querySelectorAll(".tab-btn").forEach(function(b)  { b.classList.remove("active"); });
@@ -1040,7 +941,6 @@ function showAdminTab(tabId, btnEl) {
   btnEl.classList.add("active");
 }
 
-/* ── STUDENTS TABLE ── */
 async function loadStudents() {
   /* ---- CONNECT YOUR PYTHON BACKEND HERE ----
      Replace "/api/admin/students" with your real endpoint.
@@ -1074,7 +974,6 @@ function renderStudents(students) {
   }).join("");
 }
 
-/* ── ADMIN COURSE MANAGEMENT ── */
 function getAdminCourses() {
   var stored = localStorage.getItem("adminCourses");
   return stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(COURSES)); /* copy of defaults */
@@ -1158,7 +1057,6 @@ function saveCourse() {
        fetch("/api/admin/courses/" + editId, { method: "PUT", body: JSON.stringify({...}) })
     -------------------------------------------- */
   } else {
-    /* ADD */
     var maxId = courses.reduce(function(mx, c) { return Math.max(mx, c.id); }, 0);
     courses.push({ id: maxId + 1, title: title, desc: desc, lecturer: lecturer, mods: mods });
     /* ---- CONNECT YOUR PYTHON BACKEND HERE ----
@@ -1185,9 +1083,6 @@ function cancelCourseForm() {
   document.getElementById("course-form-box").style.display = "none";
 }
 
-/* ══════════════════════════════════════════
-   ON PAGE LOAD
-══════════════════════════════════════════ */
 window.onload = function() {
   updateNavbar();
 };
