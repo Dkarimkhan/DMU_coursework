@@ -8,14 +8,14 @@ CORS(app)
 print("BACKEND STARTED")
 
 # =========================
-# DATABASE CONNECTION
+# DATABASE
 # =========================
 
 db = mysql.connector.connect(
     host="localhost",
     user="root",
     password="",
-    database="college_database"
+    database="itacademy_database"
 )
 
 # =========================
@@ -31,14 +31,14 @@ def init_db():
         name VARCHAR(100),
         email VARCHAR(100) UNIQUE,
         password VARCHAR(100),
-        user_type VARCHAR(50)
+        user_type VARCHAR(20) DEFAULT 'student'
     )
     """)
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS courses (
         course_id INT AUTO_INCREMENT PRIMARY KEY,
-        course_name VARCHAR(100),
+        course_name VARCHAR(150),
         course_description TEXT
     )
     """)
@@ -46,9 +46,10 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS modules (
         module_id INT AUTO_INCREMENT PRIMARY KEY,
-        module_name VARCHAR(100),
+        module_name VARCHAR(150),
         course_id INT,
         FOREIGN KEY (course_id) REFERENCES courses(course_id)
+        ON DELETE CASCADE
     )
     """)
 
@@ -57,8 +58,10 @@ def init_db():
         enrollment_id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT,
         course_id INT,
-        FOREIGN KEY (user_id) REFERENCES users(user_id),
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
+        ON DELETE CASCADE,
         FOREIGN KEY (course_id) REFERENCES courses(course_id)
+        ON DELETE CASCADE
     )
     """)
 
@@ -68,252 +71,237 @@ def init_db():
 init_db()
 
 # =========================
-# SEED COURSES (AUTO)
+# SEED DATA (AUTO RESET SAFE)
 # =========================
 
-def seed_courses():
+def seed_data():
     cursor = db.cursor()
 
     cursor.execute("SELECT COUNT(*) FROM courses")
     count = cursor.fetchone()[0]
 
     if count == 0:
-        print("Seeding courses...")
 
         cursor.execute("""
         INSERT INTO courses (course_name, course_description)
         VALUES
-        ('Intro to Programming', 'Python basics'),
+        ('Introduction to Programming', 'Learn Python basics'),
         ('Web Development', 'HTML CSS JS'),
-        ('Database Management', 'MySQL')
+        ('Database Systems', 'MySQL and databases'),
+        ('Cybersecurity Fundamentals', 'Security, threats, encryption'),
+        ('Data Science and Machine Learning', 'Data analysis + ML'),
+        ('Network and Systems Administration', 'Networking + servers')
         """)
 
         db.commit()
 
-        print("Courses added!")
+        cursor.execute("""
+        INSERT INTO modules (module_name, course_id)
+        VALUES
+        ('Python Basics', 1),
+        ('Loops and Functions', 1),
+
+        ('HTML & CSS', 2),
+        ('JavaScript Basics', 2),
+
+        ('SQL Queries', 3),
+        ('Database Design', 3),
+
+        ('Cybersecurity Intro', 4),
+        ('Encryption Basics', 4),
+
+        ('Data Analysis with Python', 5),
+        ('Machine Learning Basics', 5),
+
+        ('Networking Fundamentals', 6),
+        ('Cloud Computing Basics', 6)
+        """)
+
+        db.commit()
 
     cursor.close()
 
-seed_courses()
+seed_data()
 
 # =========================
 # HOME
 # =========================
 
-@app.route('/')
+@app.route("/")
 def home():
-    return "Backend connected successfully!"
+    return "Backend running successfully!"
 
 # =========================
 # REGISTER
 # =========================
 
-@app.route('/register', methods=['POST'])
+@app.route("/register", methods=["POST"])
 def register():
-
     data = request.json
 
-    name = data.get('name')
-    email = data.get('email')
-    password = data.get('password')
+    name = data["name"]
+    email = data["email"]
+    password = data["password"]
 
     cursor = db.cursor()
 
-    try:
-        cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
-        if cursor.fetchone():
-            return jsonify({"message": "Email already exists"}), 400
+    cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
+    if cursor.fetchone():
+        return jsonify({"message": "Email already exists"}), 400
 
-        cursor.execute("""
-            INSERT INTO users (name, email, password, user_type)
-            VALUES (%s, %s, %s, %s)
-        """, (name, email, password, "student"))
+    cursor.execute("""
+        INSERT INTO users (name, email, password)
+        VALUES (%s, %s, %s)
+    """, (name, email, password))
 
-        db.commit()
+    db.commit()
 
-        cursor.execute("""
-            SELECT user_id, name, email, user_type
-            FROM users
-            WHERE email=%s
-        """, (email,))
-
-        user = cursor.fetchone()
-
-        return jsonify({
-            "message": "User registered successfully",
-            "user": {
-                "user_id": user[0],
-                "name": user[1],
-                "email": user[2],
-                "user_type": user[3]
-            }
-        })
-
-    except Exception as e:
-        print("REGISTER ERROR:", e)
-        return jsonify({"message": "Server error"}), 500
+    return jsonify({"message": "User created successfully"})
 
 # =========================
 # LOGIN
 # =========================
 
-@app.route('/login', methods=['POST'])
+@app.route("/login", methods=["POST"])
 def login():
-
     data = request.json
 
-    email = data.get('email')
-    password = data.get('password')
+    email = data["email"]
+    password = data["password"]
 
     cursor = db.cursor()
 
     cursor.execute("""
-        SELECT user_id, name, email, user_type
+        SELECT user_id, name, email
         FROM users
         WHERE email=%s AND password=%s
     """, (email, password))
 
     user = cursor.fetchone()
 
-    if user:
-        return jsonify({
-            "message": "Login successful",
-            "user": {
-                "user_id": user[0],
-                "name": user[1],
-                "email": user[2],
-                "user_type": user[3]
-            }
-        })
-
-    return jsonify({"message": "Invalid email or password"}), 401
-
-# =========================
-# PROFILE
-# =========================
-
-@app.route('/profile/<int:user_id>', methods=['GET'])
-def profile(user_id):
-
-    cursor = db.cursor()
-
-    cursor.execute("""
-        SELECT user_id, name, email, user_type
-        FROM users
-        WHERE user_id=%s
-    """, (user_id,))
-
-    user = cursor.fetchone()
-
     if not user:
-        return jsonify({"message": "User not found"}), 404
+        return jsonify({"message": "Invalid login"}), 401
 
     return jsonify({
-        "user_id": user[0],
-        "name": user[1],
-        "email": user[2],
-        "user_type": user[3]
+        "user": {
+            "user_id": user[0],
+            "name": user[1],
+            "email": user[2]
+        }
     })
 
 # =========================
-# COURSES
+# GET ALL COURSES (IMPORTANT FOR FRONTEND)
 # =========================
 
-@app.route('/courses', methods=['GET'])
+@app.route("/courses", methods=["GET"])
 def get_courses():
-
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM courses")
 
+    cursor.execute("SELECT * FROM courses ORDER BY course_id")
     rows = cursor.fetchall()
 
-    courses = []
-
-    for r in rows:
-        courses.append({
+    return jsonify([
+        {
             "course_id": r[0],
             "name": r[1],
             "description": r[2]
-        })
-
-    return jsonify(courses)
+        }
+        for r in rows
+    ])
 
 # =========================
-# MODULES
+# GET SINGLE COURSE (FOR COURSE PAGE)
 # =========================
 
-@app.route('/courses/<int:course_id>/modules', methods=['GET'])
-def get_modules(course_id):
+@app.route("/courses/<int:course_id>", methods=["GET"])
+def get_course(course_id):
+    cursor = db.cursor()
+
+    cursor.execute("""
+        SELECT course_id, course_name, course_description
+        FROM courses
+        WHERE course_id=%s
+    """, (course_id,))
+
+    c = cursor.fetchone()
+
+    if not c:
+        return jsonify({"message": "Course not found"}), 404
+
+    cursor.execute("""
+        SELECT module_name
+        FROM modules
+        WHERE course_id=%s
+    """, (course_id,))
+
+    modules = cursor.fetchall()
+
+    return jsonify({
+        "course_id": c[0],
+        "name": c[1],
+        "description": c[2],
+        "modules": [m[0] for m in modules]
+    })
+
+# =========================
+# ENROLL
+# =========================
+
+@app.route("/enroll", methods=["POST"])
+def enroll():
+    data = request.json
+
+    user_id = data["user_id"]
+    course_id = data["course_id"]
 
     cursor = db.cursor()
 
     cursor.execute("""
-        SELECT * FROM modules
-        WHERE course_id=%s
-    """, (course_id,))
+        SELECT * FROM enrollments
+        WHERE user_id=%s AND course_id=%s
+    """, (user_id, course_id))
+
+    if cursor.fetchone():
+        return jsonify({"message": "Already enrolled"}), 400
+
+    cursor.execute("""
+        INSERT INTO enrollments (user_id, course_id)
+        VALUES (%s, %s)
+    """, (user_id, course_id))
+
+    db.commit()
+
+    return jsonify({"message": "Enrolled successfully"})
+
+# =========================
+# PROFILE (USER COURSES)
+# =========================
+
+@app.route("/profile/<int:user_id>", methods=["GET"])
+def profile(user_id):
+    cursor = db.cursor()
+
+    cursor.execute("""
+        SELECT c.course_id, c.course_name
+        FROM courses c
+        JOIN enrollments e ON c.course_id = e.course_id
+        WHERE e.user_id=%s
+    """, (user_id,))
 
     rows = cursor.fetchall()
 
-    modules = []
-
-    for r in rows:
-        modules.append({
-            "module_id": r[0],
-            "module_name": r[1],
-            "course_id": r[2]
-        })
-
-    return jsonify(modules)
+    return jsonify([
+        {
+            "course_id": r[0],
+            "course_name": r[1]
+        }
+        for r in rows
+    ])
 
 # =========================
-# ENROLL (FIXED)
+# RUN
 # =========================
 
-@app.route('/enroll', methods=['POST'])
-def enroll():
-
-    data = request.json
-    print("ENROLL DATA:", data)
-
-    user_id = data.get('user_id')
-    course_id = data.get('course_id')
-
-    if not user_id or not course_id:
-        return jsonify({"message": "Missing data"}), 400
-
-    cursor = db.cursor()
-
-    try:
-        cursor.execute("""
-            SELECT * FROM enrollments
-            WHERE user_id=%s AND course_id=%s
-        """, (user_id, course_id))
-
-        if cursor.fetchone():
-            return jsonify({"message": "Already enrolled"}), 400
-
-        cursor.execute("""
-            INSERT INTO enrollments (user_id, course_id)
-            VALUES (%s, %s)
-        """, (user_id, course_id))
-
-        db.commit()
-
-        return jsonify({"message": "Enrolled successfully"})
-
-    except Exception as e:
-        print("ENROLL ERROR:", e)
-        return jsonify({
-            "message": "Server error",
-            "error": str(e)
-        }), 500
-
-# =========================
-# RUN SERVER
-# =========================
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
-
-
-
