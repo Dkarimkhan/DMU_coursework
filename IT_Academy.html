@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IT Academy</title>
+  <style>
+    /* ══════════════════════════════
+       GLOBAL STYLES
+    ══════════════════════════════ */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #000000;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* All "pages" are hidden by default; only one shows at a time */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      background-color: #8B0000;
+      padding: 12px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar span.logo {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .navbar-links { display: flex; align-items: center; }
+    .navbar-links span {
+      color: #ffffff;
+      text-decoration: none;
+      margin-left: 15px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .navbar-links span:hover { text-decoration: underline; }
+
+    /* ── BUTTONS ── */
+    .btn-white {
+      background-color: #ffffff;
+      color: #8B0000;
+      border: 2px solid #ffffff;
+      padding: 7px 16px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .btn-white:hover { background-color: #f0f0f0; }
+
+    .btn-outline {
+      background-color: transparent;
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      padding: 7px 16px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .btn-outline:hover { background-color: #6e0000; }
+
+    .btn-red {
+      background-color: #8B0000;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+    }
+    .btn-red:hover { background-color: #6e0000; }
+
+    .btn-grey {
+      background-color: #999999;
+      color: #ffffff;
+      border: none;
+      padding: 9px 20px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+    }
+    .btn-grey:hover { background-color: #777777; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
+    .modal-box {
+      background: #ffffff;
+      width: 340px;
+      margin: 120px auto;
+      padding: 30px;
+      border-top: 4px solid #8B0000;
+    }
+    .modal-box h2 { margin-top: 0; color: #8B0000; }
+    .modal-box label { display: block; margin-top: 12px; font-size: 14px; }
+    .modal-box input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      border: 1px solid #aaaaaa;
+      box-sizing: border-box;
+    }
+    .modal-box .btn-red { margin-top: 18px; width: 100%; padding: 10px; font-size: 15px; }
+    .modal-box .close-btn {
+      float: right;
+      cursor: pointer;
+      font-size: 20px;
+      color: #888888;
+      border: none;
+      background: none;
+    }
+    .error-msg { color: #8B0000; font-size: 13px; margin-top: 8px; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #8B0000;
+      color: #ffffff;
+      font-size: 13px;
+      margin-top: 60px;
+    }
+
+    /* ── CONTENT WRAPPER ── */
+    .content {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .section-title {
+      color: #8B0000;
+      border-bottom: 2px solid #8B0000;
+      padding-bottom: 8px;
+    }
+
+    /* ══════════════════════════════
+       HOME PAGE
+    ══════════════════════════════ */
+    .hero {
+      background-color: #f9f0f0;
+      text-align: center;
+      padding: 60px 20px 40px 20px;
+      border-bottom: 3px solid #8B0000;
+    }
+    .hero h1 { font-size: 36px; color: #8B0000; margin-bottom: 10px; }
+    .hero p {
+      font-size: 16px;
+      color: #333333;
+      max-width: 600px;
+      margin: 0 auto 25px auto;
+    }
+    .course-item {
+      border: 1px solid #cccccc;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .course-item h3 { margin: 0 0 5px 0; font-size: 17px; }
+    .course-item p  { margin: 0; font-size: 14px; color: #555555; }
+
+    /* ══════════════════════════════
+       COURSE PAGE
+    ══════════════════════════════ */
+    .course-header {
+      background-color: #8B0000;
+      color: #ffffff;
+      padding: 40px 30px 30px 30px;
+    }
+    .course-header h1 { margin: 0 0 10px 0; font-size: 30px; }
+    .course-header p  { margin: 0; font-size: 15px; max-width: 700px; }
+
+    .lecturer-box {
+      border: 1px solid #cccccc;
+      padding: 15px 20px;
+      margin-bottom: 30px;
+      background-color: #fff5f5;
+    }
+    .lecturer-box h3 {
+      margin: 0 0 5px 0;
+      color: #8B0000;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+    .lecturer-box p { margin: 0; font-size: 16px; font-weight: bold; }
+
+    .module-item {
+      border: 1px solid #dddddd;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .module-number {
+      background-color: #8B0000;
+      color: #ffffff;
+      width: 30px; height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    .register-section {
+      margin-top: 35px;
+      padding-top: 25px;
+      border-top: 2px solid #eeeeee;
+      text-align: center;
+    }
+    .register-section p { font-size: 14px; color: #555555; margin-bottom: 15px; }
+    .btn-register {
+      background-color: #8B0000;
+      color: #ffffff;
+      border: none;
+      padding: 12px 35px;
+      font-size: 16px;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+    }
+    .btn-register:hover { background-color: #6e0000; }
+    .btn-register.registered { background-color: #2e7d32; cursor: default; }
+
+    .course-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #cccccc;
+    }
+    .course-nav span { color: #8B0000; cursor: pointer; font-size: 14px; }
+    .course-nav span:hover { text-decoration: underline; }
+
+    /* ══════════════════════════════
+       PROFILE PAGE
+    ══════════════════════════════ */
+    .profile-card {
+      border: 1px solid #cccccc;
+      padding: 25px 30px;
+      margin-bottom: 35px;
+      border-top: 4px solid #8B0000;
+    }
+    .profile-card h2 { margin-top: 0; color: #8B0000; }
+    .profile-card .label {
+      font-weight: bold;
+      color: #555555;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+    .enrolled-item {
+      border: 1px solid #dddddd;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge-enrolled {
+      background-color: #2e7d32;
+      color: #ffffff;
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    /* ══════════════════════════════
+       ADMIN PAGE
+    ══════════════════════════════ */
+    #admin-login-box {
+      max-width: 380px;
+      margin: 80px auto;
+      padding: 30px;
+      border: 1px solid #cccccc;
+      border-top: 4px solid #8B0000;
+    }
+    #admin-login-box h2 { color: #8B0000; margin-top: 0; }
+    #admin-login-box label { display: block; margin-top: 12px; font-size: 14px; }
+    #admin-login-box input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      border: 1px solid #aaaaaa;
+      box-sizing: border-box;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #8B0000;
+      margin-bottom: 25px;
+    }
+    .tab-btn {
+      padding: 10px 25px;
+      border: none;
+      background: none;
+      font-size: 15px;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      color: #555555;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+    }
+    .tab-btn.active { color: #8B0000; font-weight: bold; border-bottom: 3px solid #8B0000; }
+    .tab-btn:hover  { color: #8B0000; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { background-color: #8B0000; color: #ffffff; padding: 10px 14px; text-align: left; }
+    td { padding: 10px 14px; border-bottom: 1px solid #dddddd; }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    tr:hover { background-color: #fff5f5; }
+
+    .admin-course-row {
+      border: 1px solid #cccccc;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-course-row h4 { margin: 0 0 4px 0; font-size: 15px; }
+    .admin-course-row p  { margin: 0; font-size: 13px; color: #666666; }
+    .admin-course-row .action-btns button {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      padding: 6px 12px;
+      cursor: pointer;
+      margin-left: 6px;
+      border: none;
+    }
+    .btn-edit   { background-color: #8B0000; color: #ffffff; }
+    .btn-edit:hover { background-color: #6e0000; }
+    .btn-delete { background-color: #333333; color: #ffffff; }
+    .btn-delete:hover { background-color: #111111; }
+
+    #course-form-box {
+      border: 1px solid #cccccc;
+      border-top: 3px solid #8B0000;
+      padding: 20px 25px;
+      margin-bottom: 25px;
+      display: none;
+    }
+    #course-form-box h3 { margin-top: 0; color: #8B0000; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px; }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      border: 1px solid #aaaaaa;
+      box-sizing: border-box;
+    }
+    .form-group textarea { height: 70px; resize: vertical; }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     NAVBAR  (same on every page)
+════════════════════════════════════════════ -->
+<div class="navbar">
+  <span class="logo" onclick="goTo('home')">IT Academy</span>
+  <div class="navbar-links" id="navbar-links">
+    <span onclick="goTo('home')">Home</span>
+    <span onclick="goTo('profile')" id="nav-profile" style="display:none;">My Profile</span>
+    <button class="btn-outline" id="nav-login-btn"  onclick="openModal('loginModal')">Log In</button>
+    <button class="btn-white"   id="nav-signup-btn" onclick="openModal('signupModal')">Sign Up</button>
+    <button class="btn-outline" id="nav-logout-btn" style="display:none;" onclick="logout()">Log Out</button>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: HOME
+════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <div class="hero">
+    <h1>Welcome to IT Academy</h1>
+    <p>A learning platform where students can enroll in IT courses, explore modules, and build real skills for the modern tech industry.</p>
+    <button class="btn-red" onclick="openModal('signupModal')">Get Started</button>
+  </div>
+
+  <div class="content">
+    <h2 class="section-title">Available Courses</h2>
+
+    <div class="course-item">
+      <div>
+        <h3>Introduction to Programming</h3>
+        <p>Learn the basics of programming using Python. Perfect for complete beginners.</p>
+      </div>
+      <button class="btn-red" onclick="openCourse(1)">More Info</button>
+    </div>
+
+    <div class="course-item">
+      <div>
+        <h3>Web Development</h3>
+        <p>Build websites from scratch using HTML, CSS, and JavaScript.</p>
+      </div>
+      <button class="btn-red" onclick="openCourse(2)">More Info</button>
+    </div>
+
+    <div class="course-item">
+      <div>
+        <h3>Database Management</h3>
+        <p>Learn how to design, query, and manage databases using SQL and NoSQL.</p>
+      </div>
+      <button class="btn-red" onclick="openCourse(3)">More Info</button>
+    </div>
+
+    <div class="course-item">
+      <div>
+        <h3>Cybersecurity Fundamentals</h3>
+        <p>Understand threats, vulnerabilities, cryptography, and how to protect systems.</p>
+      </div>
+      <button class="btn-red" onclick="openCourse(4)">More Info</button>
+    </div>
+
+    <div class="course-item">
+      <div>
+        <h3>Data Science and Machine Learning</h3>
+        <p>Analyze data, build models, and create visualizations using Python tools.</p>
+      </div>
+      <button class="btn-red" onclick="openCourse(5)">More Info</button>
+    </div>
+
+    <div class="course-item">
+      <div>
+        <h3>Network and Systems Administration</h3>
+        <p>Learn networking, server management, and the basics of cloud computing.</p>
+      </div>
+      <button class="btn-red" onclick="openCourse(6)">More Info</button>
+    </div>
+  </div>
+
+  <footer>IT Academy &copy; 2025. All rights reserved.</footer>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: COURSE DETAIL  (one page, filled by JS)
+════════════════════════════════════════════ -->
+<div class="page" id="page-course">
+
+  <div class="course-header">
+    <h1 id="c-title">Course Title</h1>
+    <p  id="c-desc">Course description.</p>
+  </div>
+
+  <div class="content">
+
+    <div class="lecturer-box">
+      <h3>Course Lecturer</h3>
+      <p id="c-lecturer">Lecturer Name</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">Course Modules</h2>
+      <div id="c-modules"></div>
+    </div>
+
+    <div class="register-section">
+      <p>Ready to join this course? Click below to register.</p>
+      <button class="btn-register" id="registerBtn" onclick="registerCourse()">
+        Register for this Course
+      </button>
+    </div>
+
+    <div class="course-nav">
+      <span id="c-prev" onclick="navCourse(-1)">Previous Course</span>
+      <span onclick="goTo('home')">All Courses</span>
+      <span id="c-next" onclick="navCourse(1)">Next Course</span>
+    </div>
+  </div>
+
+  <footer>IT Academy &copy; 2025. All rights reserved.</footer>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: PROFILE
+════════════════════════════════════════════ -->
+<div class="page" id="page-profile">
+
+  <div class="content">
+    <div class="profile-card">
+      <h2>My Profile</h2>
+      <p><span class="label">Name</span></p>
+      <p id="profile-name" style="font-size:16px;"></p>
+      <p style="margin-top:12px;"><span class="label">Email</span></p>
+      <p id="profile-email" style="font-size:16px;"></p>
+    </div>
+
+    <h2 class="section-title">My Enrolled Courses</h2>
+    <div id="profile-courses"></div>
+    <br>
+    <button class="btn-red" onclick="goTo('home')">Browse More Courses</button>
+  </div>
+
+  <footer>IT Academy &copy; 2025. All rights reserved.</footer>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: ADMIN
+════════════════════════════════════════════ -->
+<div class="page" id="page-admin">
+
+  <!-- Admin login form -->
+  <div id="admin-login-box">
+    <h2>Admin Login</h2>
+    <p style="font-size:14px; color:#555555;">This area is for administrators only.</p>
+    <label>Username
+      <input type="text" id="admin-user" placeholder="admin">
+    </label>
+    <label>Password
+      <input type="password" id="admin-pass" placeholder="Password">
+    </label>
+    <p class="error-msg" id="admin-login-error"></p>
+    <button class="btn-red" style="margin-top:18px; width:100%; padding:10px;" onclick="adminLogin()">Log In as Admin</button>
+  </div>
+
+  <!-- Admin panel (hidden until logged in) -->
+  <div id="admin-panel" style="display:none;">
+    <div class="content">
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h2 style="margin:0; color:#8B0000;">Admin Panel</h2>
+        <button class="btn-outline" style="color:#8B0000; border-color:#8B0000;" onclick="adminLogout()">Log Out of Admin</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showAdminTab('tab-students', this)">Enrolled Students</button>
+        <button class="tab-btn"        onclick="showAdminTab('tab-courses',  this)">Manage Courses</button>
+      </div>
+
+      <!-- TAB: Students -->
+      <div class="tab-pane active" id="tab-students">
+        <h2 class="section-title">Students Enrolled in Courses</h2>
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Email</th><th>Enrolled Course</th></tr>
+          </thead>
+          <tbody id="students-tbody"></tbody>
+        </table>
+        <p id="no-students-msg" style="color:#888;font-size:14px;display:none;">No students enrolled yet.</p>
+        <p style="font-size:13px;color:#888;margin-top:20px;">
+          Connect the loadStudents() function in the script to your Python backend to show real data.
+        </p>
+      </div>
+
+      <!-- TAB: Courses -->
+      <div class="tab-pane" id="tab-courses">
+        <h2 class="section-title">Manage Courses</h2>
+
+        <!-- Add / Edit form -->
+        <div id="course-form-box">
+          <h3 id="form-heading">Add New Course</h3>
+          <input type="hidden" id="edit-id">
+          <div class="form-group">
+            <label>Course Title</label>
+            <input type="text" id="f-title" placeholder="e.g. Introduction to Programming">
+          </div>
+          <div class="form-group">
+            <label>Short Description</label>
+            <textarea id="f-desc" placeholder="What will students learn?"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Lecturer Name</label>
+            <input type="text" id="f-lecturer" placeholder="e.g. Dr. Smith">
+          </div>
+          <div class="form-group"><label>Module 1</label><input type="text" id="f-mod1"></div>
+          <div class="form-group"><label>Module 2</label><input type="text" id="f-mod2"></div>
+          <div class="form-group"><label>Module 3</label><input type="text" id="f-mod3"></div>
+          <div class="form-group"><label>Module 4</label><input type="text" id="f-mod4"></div>
+          <p class="error-msg" id="form-error"></p>
+          <div style="margin-top:15px;">
+            <button class="btn-red"  onclick="saveCourse()">Save Course</button>
+            <button class="btn-grey" onclick="cancelCourseForm()" style="margin-left:10px;">Cancel</button>
+          </div>
+        </div>
+
+        <button class="btn-red" onclick="showAddCourseForm()" style="margin-bottom:20px;">+ Add New Course</button>
+        <div id="admin-courses-list"></div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /admin-panel -->
+
+  <footer>IT Academy &copy; 2025. All rights reserved.</footer>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     MODAL: LOG IN
+════════════════════════════════════════════ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box">
+    <button class="close-btn" onclick="closeModal('loginModal')">x</button>
+    <h2>Log In</h2>
+    <label>Email
+      <input type="email" id="login-email" placeholder="you@example.com">
+    </label>
+    <label>Password
+      <input type="password" id="login-password" placeholder="Your password">
+    </label>
+    <p class="error-msg" id="login-error"></p>
+    <button class="btn-red" onclick="doLogin()">Log In</button>
+    <p style="font-size:13px; margin-top:12px;">
+      No account? <a href="#" onclick="switchModal('loginModal','signupModal')">Sign up here</a>
+    </p>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     MODAL: SIGN UP
+════════════════════════════════════════════ -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal-box">
+    <button class="close-btn" onclick="closeModal('signupModal')">x</button>
+    <h2>Sign Up</h2>
+    <label>Full Name
+      <input type="text" id="signup-name" placeholder="Your full name">
+    </label>
+    <label>Email
+      <input type="email" id="signup-email" placeholder="you@example.com">
+    </label>
+    <label>Password
+      <input type="password" id="signup-password" placeholder="Choose a password">
+    </label>
+    <p class="error-msg" id="signup-error"></p>
+    <button class="btn-red" onclick="doSignup()">Create Account</button>
+    <p style="font-size:13px; margin-top:12px;">
+      Already have an account? <a href="#" onclick="switchModal('signupModal','loginModal')">Log in</a>
+    </p>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     JAVASCRIPT — ALL LOGIC IN ONE PLACE
+════════════════════════════════════════════ -->
+<script>
+
+/* ══════════════════════════════════════════
+   COURSE DATA
+   To add/edit courses, change this array.
+══════════════════════════════════════════ */
+var COURSES = [
+  {
+    id: 1,
+    title: "Introduction to Programming",
+    desc:  "Learn the foundations of programming using Python — variables, loops, functions, and more. No prior experience needed.",
+    lecturer: "Dr. Aisha Khan",
+    mods: [
+      "Basics of Python and Setup",
+      "Variables, Data Types and Operators",
+      "Control Flow: If Statements and Loops",
+      "Functions and Modules"
+    ]
+  },
+  {
+    id: 2,
+    title: "Web Development",
+    desc:  "Build real websites from scratch using HTML, CSS, and JavaScript. Learn responsive design principles.",
+    lecturer: "Mr. Dmitri Sorokin",
+    mods: [
+      "HTML Structure and Elements",
+      "CSS Styling and Layouts",
+      "JavaScript Fundamentals",
+      "Responsive Design and Frameworks"
+    ]
+  },
+  {
+    id: 3,
+    title: "Database Management",
+    desc:  "Learn to design databases, write SQL queries, and work with both relational and NoSQL systems.",
+    lecturer: "Ms. Fatima Al-Hassan",
+    mods: [
+      "Introduction to SQL",
+      "Database Design and Normalization",
+      "Advanced Queries and Joins",
+      "Introduction to NoSQL"
+    ]
+  },
+  {
+    id: 4,
+    title: "Cybersecurity Fundamentals",
+    desc:  "Understand how cyber threats work and how to defend systems using modern security techniques.",
+    lecturer: "Prof. James Carter",
+    mods: [
+      "Network Security Basics",
+      "Threats, Attacks and Vulnerabilities",
+      "Cryptography and Encryption",
+      "Ethical Hacking Introduction"
+    ]
+  },
+  {
+    id: 5,
+    title: "Data Science and Machine Learning",
+    desc:  "Analyze real data, build predictive models, and visualize results using Python libraries like pandas and scikit-learn.",
+    lecturer: "Dr. Mei Lin",
+    mods: [
+      "Data Analysis with Python (pandas)",
+      "Statistics for Data Science",
+      "Machine Learning Basics (scikit-learn)",
+      "Data Visualization (matplotlib)"
+    ]
+  },
+  {
+    id: 6,
+    title: "Network and Systems Administration",
+    desc:  "Learn how networks operate, how to manage servers, and the basics of cloud computing infrastructure.",
+    lecturer: "Mr. Carlos Rivera",
+    mods: [
+      "Networking Fundamentals (TCP/IP)",
+      "Operating Systems and Command Line",
+      "Server Setup and Administration",
+      "Cloud Computing Basics"
+    ]
+  }
+];
+
+/* Course currently being viewed (used for Prev/Next navigation) */
+var currentCourseId = 1;
+
+/* ══════════════════════════════════════════
+   PAGE NAVIGATION
+   goTo(pageName) switches which page is visible.
+══════════════════════════════════════════ */
+function goTo(pageName) {
+  /* Hide all pages */
+  document.querySelectorAll(".page").forEach(function(p) {
+    p.classList.remove("active");
+  });
+  /* Show requested page */
+  document.getElementById("page-" + pageName).classList.add("active");
+  /* Scroll back to top */
+  window.scrollTo(0, 0);
+
+  /* Fill page with data if needed */
+  if (pageName === "profile") fillProfilePage();
+}
+
+/* ══════════════════════════════════════════
+   COURSE PAGE
+══════════════════════════════════════════ */
+function openCourse(id) {
+  var course = COURSES.find(function(c) { return c.id === id; });
+  if (!course) return;
+
+  currentCourseId = id;
+
+  /* Fill in title, description, lecturer */
+  document.getElementById("c-title").textContent    = course.title;
+  document.getElementById("c-desc").textContent     = course.desc;
+  document.getElementById("c-lecturer").textContent = course.lecturer;
+
+  /* Build modules list */
+  var html = "";
+  course.mods.forEach(function(mod, i) {
+    html += '<div class="module-item">';
+    html += '<div class="module-number">' + (i + 1) + '</div>';
+    html += '<div>' + mod + '</div>';
+    html += '</div>';
+  });
+  document.getElementById("c-modules").innerHTML = html;
+
+  /* Check if already registered */
+  var enrolled = getEnrolledIds();
+  var btn = document.getElementById("registerBtn");
+  if (enrolled.indexOf(id) !== -1) {
+    btn.textContent = "Registered for this Course";
+    btn.classList.add("registered");
+  } else {
+    btn.textContent = "Register for this Course";
+    btn.classList.remove("registered");
+  }
+
+  /* Prev / Next labels */
+  var prevIdx = id - 2; /* 0-based index of previous */
+  var nextIdx = id;     /* 0-based index of next */
+  document.getElementById("c-prev").textContent = (prevIdx >= 0)               ? "Previous: " + COURSES[prevIdx].title : "All Courses";
+  document.getElementById("c-next").textContent = (nextIdx < COURSES.length)   ? "Next: " + COURSES[nextIdx].title     : "All Courses";
+
+  goTo("course");
+}
+
+function navCourse(direction) {
+  var newId = currentCourseId + direction;
+  if (newId < 1 || newId > COURSES.length) {
+    goTo("home");
+  } else {
+    openCourse(newId);
+  }
+}
+
+/* ══════════════════════════════════════════
+   REGISTER FOR COURSE
+══════════════════════════════════════════ */
+async function registerCourse() {
+  var btn = document.getElementById("registerBtn");
+  if (btn.classList.contains("registered")) return;
+
+  var userEmail = localStorage.getItem("userEmail") || "";
+  var userName  = localStorage.getItem("userName")  || "";
+  var course    = COURSES.find(function(c) { return c.id === currentCourseId; });
+
+  /* ---- CONNECT YOUR PYTHON BACKEND HERE ----
+     Replace "/api/enroll" with your real endpoint.
+     Expected request body:
+       { email, name, course_id, course_title }
+     Expected response:
+       { success: true } or { success: false, message: "..." }
+  -------------------------------------------- */
+  try {
+    var res  = await fetch("/api/enroll", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: userEmail, name: userName,
+        course_id: currentCourseId, course_title: course.title
+      })
+    });
+    var data = await res.json();
+    if (data.success) {
+      saveEnrollment(currentCourseId, course.title);
+    } else {
+      alert(data.message || "Could not register. Please try again.");
+    }
+  } catch (err) {
+    /* Demo mode: save locally if backend not connected */
+    saveEnrollment(currentCourseId, course.title);
+  }
+}
+
+function saveEnrollment(id, title) {
+  var ids = getEnrolledIds();
+  if (ids.indexOf(id) === -1) {
+    ids.push(id);
+    localStorage.setItem("enrolledIds", JSON.stringify(ids));
+    var titles = getEnrolledTitles();
+    titles[id] = title;
+    localStorage.setItem("enrolledTitles", JSON.stringify(titles));
+  }
+  var btn = document.getElementById("registerBtn");
+  btn.textContent = "Registered for this Course";
+  btn.classList.add("registered");
+}
+
+function getEnrolledIds()    { return JSON.parse(localStorage.getItem("enrolledIds")    || "[]"); }
+function getEnrolledTitles() { return JSON.parse(localStorage.getItem("enrolledTitles") || "{}"); }
+
+/* ══════════════════════════════════════════
+   PROFILE PAGE
+══════════════════════════════════════════ */
+function fillProfilePage() {
+  document.getElementById("profile-name").textContent  = localStorage.getItem("userName")  || "Not logged in";
+  document.getElementById("profile-email").textContent = localStorage.getItem("userEmail") || "";
+
+  /* ---- CONNECT YOUR PYTHON BACKEND HERE ----
+     You can replace localStorage below with a fetch to /api/profile
+     to get the student's real enrolled courses from your database.
+  -------------------------------------------- */
+  var ids    = getEnrolledIds();
+  var titles = getEnrolledTitles();
+  var container = document.getElementById("profile-courses");
+
+  if (ids.length === 0) {
+    container.innerHTML = '<p style="color:#888;">You have not enrolled in any courses yet.</p>';
+    return;
+  }
+  var html = "";
+  ids.forEach(function(id) {
+    html += '<div class="enrolled-item">';
+    html += '<span>' + (titles[id] || "Course " + id) + '</span>';
+    html += '<span class="badge-enrolled">Enrolled</span>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+/* ══════════════════════════════════════════
+   MODALS (Login / Sign Up)
+══════════════════════════════════════════ */
+function openModal(id)  { document.getElementById(id).style.display = "block"; }
+function closeModal(id) { document.getElementById(id).style.display = "none";  }
+function switchModal(closeId, openId) { closeModal(closeId); openModal(openId); }
+
+/* Update navbar buttons based on login state */
+function updateNavbar() {
+  var loggedIn = localStorage.getItem("loggedIn") === "true";
+  document.getElementById("nav-login-btn").style.display  = loggedIn ? "none"         : "inline-block";
+  document.getElementById("nav-signup-btn").style.display = loggedIn ? "none"         : "inline-block";
+  document.getElementById("nav-logout-btn").style.display = loggedIn ? "inline-block" : "none";
+  document.getElementById("nav-profile").style.display    = loggedIn ? "inline"       : "none";
+}
+
+/* ── LOG IN ── */
+async function doLogin() {
+  var email    = document.getElementById("login-email").value.trim();
+  var password = document.getElementById("login-password").value;
+  var errEl    = document.getElementById("login-error");
+
+  if (!email || !password) { errEl.textContent = "Please fill in all fields."; return; }
+
+  /* ---- CONNECT YOUR PYTHON BACKEND HERE ----
+     Replace "/api/login" with your real endpoint.
+     Expected response: { success: true, name: "..." }
+                     or { success: false, message: "..." }
+  -------------------------------------------- */
+  try {
+    var res  = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, password: password })
+    });
+    var data = await res.json();
+    if (data.success) {
+      setLoggedIn(data.name, email);
+    } else {
+      errEl.textContent = data.message || "Invalid email or password.";
+    }
+  } catch (err) {
+    /* Demo mode */
+    setLoggedIn("Demo Student", email);
+  }
+}
+
+/* ── SIGN UP ── */
+async function doSignup() {
+  var name     = document.getElementById("signup-name").value.trim();
+  var email    = document.getElementById("signup-email").value.trim();
+  var password = document.getElementById("signup-password").value;
+  var errEl    = document.getElementById("signup-error");
+
+  if (!name || !email || !password) { errEl.textContent = "Please fill in all fields."; return; }
+
+  /* ---- CONNECT YOUR PYTHON BACKEND HERE ----
+     Replace "/api/signup" with your real endpoint.
+  -------------------------------------------- */
+  try {
+    var res  = await fetch("/api/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name, email: email, password: password })
+    });
+    var data = await res.json();
+    if (data.success) {
+      setLoggedIn(name, email);
+    } else {
+      errEl.textContent = data.message || "Sign up failed. Try again.";
+    }
+  } catch (err) {
+    /* Demo mode */
+    setLoggedIn(name, email);
+  }
+}
+
+function setLoggedIn(name, email) {
+  localStorage.setItem("loggedIn",  "true");
+  localStorage.setItem("userName",  name);
+  localStorage.setItem("userEmail", email);
+  closeModal("loginModal");
+  closeModal("signupModal");
+  updateNavbar();
+  goTo("profile");
+}
+
+function logout() {
+  localStorage.removeItem("loggedIn");
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userEmail");
+  updateNavbar();
+  goTo("home");
+}
+
+/* ══════════════════════════════════════════
+   ADMIN PAGE
+   Default credentials: admin / admin123
+   Change ADMIN_USERNAME and ADMIN_PASSWORD below.
+══════════════════════════════════════════ */
+var ADMIN_USERNAME = "admin";
+var ADMIN_PASSWORD = "admin123";
+
+function adminLogin() {
+  var user  = document.getElementById("admin-user").value.trim();
+  var pass  = document.getElementById("admin-pass").value;
+  var errEl = document.getElementById("admin-login-error");
+
+  /* ---- CONNECT YOUR PYTHON BACKEND HERE ----
+     Replace the simple check with fetch("/api/admin/login", ...)
+  -------------------------------------------- */
+  if (user === ADMIN_USERNAME && pass === ADMIN_PASSWORD) {
+    document.getElementById("admin-login-box").style.display = "none";
+    document.getElementById("admin-panel").style.display     = "block";
+    loadStudents();
+    renderAdminCourseList();
+  } else {
+    errEl.textContent = "Wrong username or password.";
+  }
+}
+
+function adminLogout() {
+  document.getElementById("admin-panel").style.display     = "none";
+  document.getElementById("admin-login-box").style.display = "block";
+  document.getElementById("admin-user").value = "";
+  document.getElementById("admin-pass").value = "";
+  document.getElementById("admin-login-error").textContent = "";
+}
+
+/* Admin tabs */
+function showAdminTab(tabId, btnEl) {
+  document.querySelectorAll(".tab-pane").forEach(function(p) { p.classList.remove("active"); });
+  document.querySelectorAll(".tab-btn").forEach(function(b)  { b.classList.remove("active"); });
+  document.getElementById(tabId).classList.add("active");
+  btnEl.classList.add("active");
+}
+
+/* ── STUDENTS TABLE ── */
+async function loadStudents() {
+  /* ---- CONNECT YOUR PYTHON BACKEND HERE ----
+     Replace "/api/admin/students" with your real endpoint.
+     Expected response: [{ name, email, course }, ...]
+  -------------------------------------------- */
+  try {
+    var res      = await fetch("/api/admin/students");
+    var students = await res.json();
+    renderStudents(students);
+  } catch (err) {
+    /* Demo data while backend not connected */
+    renderStudents([
+      { name: "Alice Johnson", email: "alice@example.com", course: "Web Development" },
+      { name: "Bob Smith",     email: "bob@example.com",   course: "Introduction to Programming" },
+      { name: "Carol White",   email: "carol@example.com", course: "Cybersecurity Fundamentals" }
+    ]);
+  }
+}
+
+function renderStudents(students) {
+  var tbody = document.getElementById("students-tbody");
+  var noMsg = document.getElementById("no-students-msg");
+  if (!students || students.length === 0) {
+    tbody.innerHTML = "";
+    noMsg.style.display = "block";
+    return;
+  }
+  noMsg.style.display = "none";
+  tbody.innerHTML = students.map(function(s) {
+    return "<tr><td>" + s.name + "</td><td>" + s.email + "</td><td>" + s.course + "</td></tr>";
+  }).join("");
+}
+
+/* ── ADMIN COURSE MANAGEMENT ── */
+function getAdminCourses() {
+  var stored = localStorage.getItem("adminCourses");
+  return stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(COURSES)); /* copy of defaults */
+}
+function saveAdminCourses(list) {
+  localStorage.setItem("adminCourses", JSON.stringify(list));
+}
+
+function renderAdminCourseList() {
+  var courses   = getAdminCourses();
+  var container = document.getElementById("admin-courses-list");
+  if (courses.length === 0) {
+    container.innerHTML = '<p style="color:#888;">No courses yet.</p>';
+    return;
+  }
+  container.innerHTML = courses.map(function(c) {
+    return '<div class="admin-course-row">'
+      + '<div><h4>' + c.title + '</h4><p>' + c.lecturer + '</p></div>'
+      + '<div class="action-btns">'
+      + '<button class="btn-edit"   onclick="editAdminCourse(' + c.id + ')">Edit</button>'
+      + '<button class="btn-delete" onclick="deleteAdminCourse(' + c.id + ')">Delete</button>'
+      + '</div></div>';
+  }).join("");
+}
+
+function showAddCourseForm() {
+  document.getElementById("form-heading").textContent = "Add New Course";
+  document.getElementById("edit-id").value = "";
+  ["f-title","f-desc","f-lecturer","f-mod1","f-mod2","f-mod3","f-mod4"].forEach(function(id) {
+    document.getElementById(id).value = "";
+  });
+  document.getElementById("form-error").textContent = "";
+  document.getElementById("course-form-box").style.display = "block";
+}
+
+function editAdminCourse(id) {
+  var course = getAdminCourses().find(function(c) { return c.id === id; });
+  if (!course) return;
+  document.getElementById("form-heading").textContent   = "Edit Course";
+  document.getElementById("edit-id").value              = id;
+  document.getElementById("f-title").value              = course.title;
+  document.getElementById("f-desc").value               = course.desc;
+  document.getElementById("f-lecturer").value           = course.lecturer;
+  document.getElementById("f-mod1").value               = course.mods[0] || "";
+  document.getElementById("f-mod2").value               = course.mods[1] || "";
+  document.getElementById("f-mod3").value               = course.mods[2] || "";
+  document.getElementById("f-mod4").value               = course.mods[3] || "";
+  document.getElementById("form-error").textContent     = "";
+  document.getElementById("course-form-box").style.display = "block";
+}
+
+function saveCourse() {
+  var title    = document.getElementById("f-title").value.trim();
+  var desc     = document.getElementById("f-desc").value.trim();
+  var lecturer = document.getElementById("f-lecturer").value.trim();
+  var mods     = [
+    document.getElementById("f-mod1").value.trim(),
+    document.getElementById("f-mod2").value.trim(),
+    document.getElementById("f-mod3").value.trim(),
+    document.getElementById("f-mod4").value.trim()
+  ];
+  var errEl = document.getElementById("form-error");
+
+  if (!title || !desc || !lecturer || mods.some(function(m) { return !m; })) {
+    errEl.textContent = "Please fill in all fields.";
+    return;
+  }
+
+  var courses = getAdminCourses();
+  var editId  = parseInt(document.getElementById("edit-id").value);
+
+  if (editId) {
+    /* UPDATE */
+    for (var i = 0; i < courses.length; i++) {
+      if (courses[i].id === editId) {
+        courses[i] = { id: editId, title: title, desc: desc, lecturer: lecturer, mods: mods };
+        break;
+      }
+    }
+    /* ---- CONNECT YOUR PYTHON BACKEND HERE ----
+       fetch("/api/admin/courses/" + editId, { method: "PUT", body: JSON.stringify({...}) })
+    -------------------------------------------- */
+  } else {
+    /* ADD */
+    var maxId = courses.reduce(function(mx, c) { return Math.max(mx, c.id); }, 0);
+    courses.push({ id: maxId + 1, title: title, desc: desc, lecturer: lecturer, mods: mods });
+    /* ---- CONNECT YOUR PYTHON BACKEND HERE ----
+       fetch("/api/admin/courses", { method: "POST", body: JSON.stringify({...}) })
+    -------------------------------------------- */
+  }
+
+  saveAdminCourses(courses);
+  renderAdminCourseList();
+  cancelCourseForm();
+}
+
+function deleteAdminCourse(id) {
+  if (!confirm("Are you sure you want to delete this course?")) return;
+  var courses = getAdminCourses().filter(function(c) { return c.id !== id; });
+  saveAdminCourses(courses);
+  renderAdminCourseList();
+  /* ---- CONNECT YOUR PYTHON BACKEND HERE ----
+     fetch("/api/admin/courses/" + id, { method: "DELETE" })
+  -------------------------------------------- */
+}
+
+function cancelCourseForm() {
+  document.getElementById("course-form-box").style.display = "none";
+}
+
+/* ══════════════════════════════════════════
+   ON PAGE LOAD
+══════════════════════════════════════════ */
+window.onload = function() {
+  updateNavbar();
+};
+
+</script>
+</body>
+</html>
