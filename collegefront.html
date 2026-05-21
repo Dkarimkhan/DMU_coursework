@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DMUK Computing Courses</title>
+</head>
+
+<body>
+
+<div>
+  <b>DMUK Computing Courses</b>
+
+  <button onclick="showPage('homePage')">Home</button>
+  <button onclick="showPage('loginPage')">Log In</button>
+  <button onclick="showPage('signupPage')">Sign Up</button>
+  <button onclick="showPage('profilePage')">My Profile</button>
+</div>
+
+<hr>
+
+<!-- HOME PAGE -->
+<div id="homePage">
+
+  <h1>DMUK Computing Courses</h1>
+
+  <p>Welcome to DMUK Computing Courses.</p>
+
+  <h2>Available Courses</h2>
+
+  <p>
+    <b>1. Introduction to Programming</b>
+    <button onclick="showPage('itpPage')">More Info</button>
+  </p>
+
+  <p>
+    <b>2. Web Development</b>
+    <button onclick="showPage('wdPage')">More Info</button>
+  </p>
+
+  <p>
+    <b>3. Database Management</b>
+    <button onclick="showPage('dmPage')">More Info</button>
+  </p>
+
+</div>
+
+<!-- INTRODUCTION TO PROGRAMMING -->
+<div id="itpPage" style="display:none">
+
+  <button onclick="showPage('homePage')">
+    Back to Home
+  </button>
+
+  <h2>Introduction to Programming</h2>
+
+  <p><b>Lecturer:</b> Dr. Alan Smith</p>
+
+  <p>
+    Learn Python programming fundamentals.
+  </p>
+
+  <h3>Modules:</h3>
+
+  <ul>
+    <li>Variables and Data Types</li>
+    <li>Conditions and Loops</li>
+    <li>Functions</li>
+    <li>Lists and Dictionaries</li>
+  </ul>
+
+  <button onclick="registerCourse(1)">
+    Register for this Course
+  </button>
+
+</div>
+
+<!-- WEB DEVELOPMENT -->
+<div id="wdPage" style="display:none">
+
+  <button onclick="showPage('homePage')">
+    Back to Home
+  </button>
+
+  <h2>Web Development</h2>
+
+  <p><b>Lecturer:</b> Sarah Johnson</p>
+
+  <p>
+    Learn HTML, CSS and JavaScript.
+  </p>
+
+  <h3>Modules:</h3>
+
+  <ul>
+    <li>HTML</li>
+    <li>CSS</li>
+    <li>JavaScript</li>
+    <li>Responsive Design</li>
+  </ul>
+
+  <button onclick="registerCourse(2)">
+    Register for this Course
+  </button>
+
+</div>
+
+<!-- DATABASE MANAGEMENT -->
+<div id="dmPage" style="display:none">
+
+  <button onclick="showPage('homePage')">
+    Back to Home
+  </button>
+
+  <h2>Database Management</h2>
+
+  <p><b>Lecturer:</b> James Lee</p>
+
+  <p>
+    Learn SQL and MySQL databases.
+  </p>
+
+  <h3>Modules:</h3>
+
+  <ul>
+    <li>SQL Basics</li>
+    <li>Relationships</li>
+    <li>Joins</li>
+    <li>Normalization</li>
+  </ul>
+
+  <button onclick="registerCourse(3)">
+    Register for this Course
+  </button>
+
+</div>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" style="display:none">
+
+  <h2>Log In</h2>
+
+  <input
+    type="email"
+    id="loginEmail"
+    placeholder="Email"
+  >
+
+  <br><br>
+
+  <input
+    type="password"
+    id="loginPassword"
+    placeholder="Password"
+  >
+
+  <br><br>
+
+  <button onclick="login()">
+    Log In
+  </button>
+
+</div>
+
+<!-- SIGNUP PAGE -->
+<div id="signupPage" style="display:none">
+
+  <h2>Sign Up</h2>
+
+  <input
+    type="text"
+    id="signupName"
+    placeholder="Full Name"
+  >
+
+  <br><br>
+
+  <input
+    type="email"
+    id="signupEmail"
+    placeholder="Email"
+  >
+
+  <br><br>
+
+  <input
+    type="password"
+    id="signupPassword"
+    placeholder="Password"
+  >
+
+  <br><br>
+
+  <button onclick="register()">
+    Create Account
+  </button>
+
+</div>
+
+<!-- PROFILE PAGE -->
+<div id="profilePage" style="display:none">
+
+  <h2>My Profile</h2>
+
+  <p id="profileInfo">
+    User information will appear here.
+  </p>
+
+</div>
+
+<script>
+
+const BASE_URL = "http://127.0.0.1:5000";
+
+
+// =======================
+// PAGE NAVIGATION
+// =======================
+
+function showPage(pageId) {
+
+  const pages = document.querySelectorAll("div[id$='Page']");
+
+  pages.forEach(page => {
+    page.style.display = "none";
+  });
+
+  document.getElementById(pageId).style.display = "block";
+}
+
+
+// =======================
+// LOGIN
+// =======================
+
+function login() {
+
+  fetch(BASE_URL + "/login", {
+
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+
+      email: document.getElementById("loginEmail").value,
+
+      password: document.getElementById("loginPassword").value
+
+    })
+
+  })
+
+  .then(response => response.json())
+
+  .then(data => {
+
+    alert(data.message);
+
+    if (data.message === "Login successful") {
+      showPage("profilePage");
+    }
+
+  })
+
+  .catch(error => {
+    console.log(error);
+  });
+
+}
+
+
+// =======================
+// REGISTER
+// =======================
+
+function register() {
+
+  fetch(BASE_URL + "/register", {
+
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+
+      name: document.getElementById("signupName").value,
+
+      email: document.getElementById("signupEmail").value,
+
+      password: document.getElementById("signupPassword").value
+
+    })
+
+  })
+
+  .then(response => response.json())
+
+  .then(data => {
+    alert(data.message);
+  })
+
+  .catch(error => {
+    console.log(error);
+  });
+
+}
+
+
+// =======================
+// COURSE ENROLLMENT
+// =======================
+
+function registerCourse(courseId) {
+
+  fetch(BASE_URL + "/enroll", {
+
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+
+      user_id: 1,
+      course_id: courseId
+
+    })
+
+  })
+
+  .then(response => response.json())
+
+  .then(data => {
+    alert(data.message);
+  })
+
+  .catch(error => {
+    console.log(error);
+  });
+
+}
+
+</script>
+
+</body>
+</html>
