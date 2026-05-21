@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DMUK Computing Courses</title>
+</head>
+
+<body>
+
+<div>
+  <b>DMUK Computing Courses</b>
+
+  <button onclick="showPage('homePage')">Home</button>
+  <button onclick="showPage('loginPage')">Log In</button>
+  <button onclick="showPage('signupPage')">Sign Up</button>
+  <button onclick="showPage('profilePage'); loadProfile()">My Profile</button>
+</div>
+
+<hr>
+
+<!-- HOME -->
+<div id="homePage">
+
+  <h1>DMUK Computing Courses</h1>
+
+  <h2>Available Courses</h2>
+
+  <p>
+    <b>1. Intro to Programming</b>
+    <button onclick="registerCourse(1)">Enroll</button>
+  </p>
+
+  <p>
+    <b>2. Web Development</b>
+    <button onclick="registerCourse(2)">Enroll</button>
+  </p>
+
+  <p>
+    <b>3. Database Management</b>
+    <button onclick="registerCourse(3)">Enroll</button>
+  </p>
+
+</div>
+
+<!-- LOGIN -->
+<div id="loginPage" style="display:none">
+
+  <h2>Log In</h2>
+
+  <input id="loginEmail" placeholder="Email"><br><br>
+  <input id="loginPassword" placeholder="Password" type="password"><br><br>
+
+  <button onclick="login()">Login</button>
+
+</div>
+
+<!-- SIGNUP -->
+<div id="signupPage" style="display:none">
+
+  <h2>Sign Up</h2>
+
+  <input id="signupName" placeholder="Name"><br><br>
+  <input id="signupEmail" placeholder="Email"><br><br>
+  <input id="signupPassword" placeholder="Password" type="password"><br><br>
+
+  <button onclick="register()">Create Account</button>
+
+</div>
+
+<!-- PROFILE -->
+<div id="profilePage" style="display:none">
+
+  <h2>My Profile</h2>
+
+  <p id="profileInfo">No data yet</p>
+
+</div>
+
+<script>
+
+const BASE_URL = "http://127.0.0.1:5000";
+
+
+// =======================
+// NAVIGATION
+// =======================
+function showPage(pageId) {
+
+  document.querySelectorAll("div").forEach(div => {
+    if (div.id.includes("Page")) {
+      div.style.display = "none";
+    }
+  });
+
+  document.getElementById(pageId).style.display = "block";
+}
+
+
+// =======================
+// LOGIN
+// =======================
+function login() {
+
+  fetch(BASE_URL + "/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: document.getElementById("loginEmail").value,
+      password: document.getElementById("loginPassword").value
+    })
+  })
+
+  .then(res => res.json())
+  .then(data => {
+
+    alert(data.message);
+
+    if (data.user) {
+
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      showPage("profilePage");
+      loadProfile();
+    }
+  })
+
+  .catch(err => console.log(err));
+}
+
+
+// =======================
+// REGISTER
+// =======================
+function register() {
+
+  fetch(BASE_URL + "/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: document.getElementById("signupName").value,
+      email: document.getElementById("signupEmail").value,
+      password: document.getElementById("signupPassword").value
+    })
+  })
+
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message);
+  })
+
+  .catch(err => console.log(err));
+}
+
+
+// =======================
+// PROFILE LOAD
+// =======================
+function loadProfile() {
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  console.log("USER:", user);
+
+  if (!user) {
+    document.getElementById("profileInfo").innerText = "No user logged in";
+    return;
+  }
+
+  fetch(BASE_URL + "/profile/" + user.user_id)
+    .then(res => res.json())
+    .then(data => {
+
+      document.getElementById("profileInfo").innerHTML = `
+        <b>Name:</b> ${data.name}<br>
+        <b>Email:</b> ${data.email}<br>
+        <b>Type:</b> ${data.user_type}
+      `;
+    });
+}
+
+
+// =======================
+// ENROLL
+// =======================
+function registerCourse(courseId) {
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!user) {
+    alert("Please login first!");
+    return;
+  }
+
+  fetch(BASE_URL + "/enroll", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_id: user.user_id,
+      course_id: courseId
+    })
+  })
+
+  .then(res => res.json())
+  .then(data => alert(data.message))
+
+  .catch(err => console.log(err));
+}
+
+</script>
+
+</body>
+</html>
