@@ -1,4 +1,3 @@
-# DMU_coursework
 # Agile-Based Course and Module Management System 
 This project is developed for the Information and Technology College 
 
