@@ -5,3 +5,5 @@ This project is developed for the Information and Technology College
 - Dinara (Backend Developer / Database Design)
 - Aruzhan (Frontend Developer / UI Design)
 - Islana (Product Owner / QA Engineer)
+
+![System Prototype](screenshot.png)
